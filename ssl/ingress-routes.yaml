@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-routes
+  annotations:
+    # Change this when staging already works for "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+spec:
+  tls:
+  - hosts:
+#change to your domain
+    - proyecto2.andrescaro.tech
+    secretName: tls-secret
+  rules:
+#change to your domain
+  - host: proyecto2.andrescaro.tech
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wordpress
+            port:
+              number: 80
