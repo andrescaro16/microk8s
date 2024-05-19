@@ -1,0 +1,55 @@
+1. Se crea vpc publica
+2. Se crea grupo de seguridad publico
+3 Se crean instnacias con la misma configuracion
+  3.1 WP-MASTER
+  3.2 WP-WORKER1
+  3.3 WP-WORKER2
+  3.4 WP-NFS
+4. PARA TODAS LAS INSTANCIAS CONFIGURAR LO SIGUIENTE:
+  * sudo apt update
+  * sudo apt upgrade -y
+  * sudo snap install microk8s --classic --channel=1.30/stable
+  * sudo usermod -aG microk8s $USER
+  * mkdir -p ~/.kube
+  * sudo chown -f -R $USER ~/.kube
+  * (Reiniciar terminal)
+  * microk8s status --wait-ready
+  * microk8s enable dashboard dns registry istio ingress
+  * sudo apt install nfs-common
+
+5. Conectar cada uno de los workers al cluster.
+  5.1 En el master ejecutar este comando para establecer una conexion:
+    * microk8s add-node
+
+6. Crear NFS
+  * Segui el siguiente tuturial corriendo los comandos exclusivamente para el NFS https://microk8s.io/docs/how-to-nfs
+
+7. Agregart CSI en el nodo master para el NFS.
+ * Seguir esta documentacion https://microk8s.io/docs/how-to-nfs apartado `Install the CSI driver for NFS`
+
+8. Crear manifiestos necesarios en el master para el NFS
+Necesitaremos crear los manifiestos de `StorageClass` y `PersistentVolumeClaim` usando el nfs-csi StorageClass.
+  8.1 Crear StorageClass para el NFS.
+  ``ADJUNTAR CODIGO``
+    * Para validar que el recurso se creo de manera exitosa correr `microk8s kubectl get storageclass`
+  8.2 Crear PersistentVolumeClaim usando el nfs-csi storage class.
+  ``ADJUNTAR CODIGO``
+    * Para validar que el recurso se creo de manera exitosa correr `microk8s kubectl get persistentvolumeclaim`
+
+9. Configurar manifiestos de mysql
+ * mkdir mysql-manifests
+ * cd mysql-manifests
+```ADJUNTAR CODIGO```
+ * microk8s kubectl apply -f . -> Aplica todos los manifiesto, debemos esperar un momento para que se ejecute todo.
+ * Validamos el estado de ejecuccion con `microk8s kubectl get pods`
+ *
+10. Configurar manifiestos de wordpress
+* mkdir wordpress-manifests
+ * cd wordpress-manifests
+```ADJUNTAR CODIGO```
+ * microk8s kubectl apply -f . -> Aplica todos los manifiesto, debemos esperar un momento para que se ejecute todo.
+ * Validamos el estado de ejecuccion con `microk8s kubectl get pods`
+ 
+11. Configurar manifiestos del ingress
+ * mmkdir ingress
+ * cd ingress
