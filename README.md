@@ -530,7 +530,6 @@ spec:
 
 # 4. Resultados obtenidos
 
-[ADJUNTAR LINK DEL VIDEO DE LA DEMOSTRACIÓN DEL PROYECTO]()
 
 Pantallazo de prueba:
 ![Wordpress funcionando](./images/wp-funcionando.jpeg)
