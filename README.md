@@ -1,8 +1,8 @@
 # Info de la materia: st0263 <nombre>
 #
 # Estudiante(s): 
-* Andres Camilo Alvarez Vasquez, acalvarezv@eafit.edu.co
-* Julian Andres Caro, ajcaror@eafit.edu.co
+* Andrés Camilo Alvarez Vasquez, acalvarezv@eafit.edu.co
+* Andrés Julian Caro Restrepo, ajcaror@eafit.edu.co
 
 # Profesor: Alvaro Ospina, aeospinas@eafit.edu.co
 
@@ -109,7 +109,7 @@ Seguir esta documentacion https://microk8s.io/docs/how-to-nfs apartado `Install 
 ## 3.8. Crear manifiestos necesarios en el master para el NFS
 Necesitaremos crear los manifiestos de `StorageClass` y `PersistentVolumeClaim` usando el nfs-csi StorageClass. Estos manifiesto estan en la carpeta `nfs-manifests` de este repositorio
 ### 3.8.1 Crear StorageClass para el NFS.
-```
+```yaml
 # sc-nfs.yaml
 ---
 apiVersion: storage.k8s.io/v1
@@ -131,7 +131,7 @@ mountOptions:
 * Se corre el siguiente comando para aplicar el manifiesto `microk8s kubectl apply -f - < sc-nfs.yaml`
 * Para validar que el recurso se creo de manera exitosa correr `microk8s kubectl get storageclass`
 ### 3.8.2 Crear PersistentVolumeClaim usando el nfs-csi storage class.
-```
+```yaml
 # pvc-nfs.yaml
 ---
 apiVersion: v1
@@ -182,7 +182,7 @@ Events:
  * Se debe correr el siguiente comando en el master para tener los manifiestos organizados ```mkdir mysql-manifests```
  * cd mysql-manifests
  * Se deben crear los siguiente manifiestos
-  ```
+  ```yaml
   # mysql-deployment.yaml
 ---
 apiVersion: apps/v1 
@@ -227,7 +227,7 @@ spec:
         persistentVolumeClaim:
           claimName: mysql-pvc
   ```
-  ```
+  ```yaml
   # mysql-pv.yaml
 ---
 apiVersion: v1
@@ -246,7 +246,7 @@ spec:
     server: 10.0.0.6
     path: /srv/nfs
   ```
-```
+```yaml
 # mysql-pvc.yaml
 ---
 apiVersion: v1
@@ -263,7 +263,7 @@ spec:
     requests:
       storage: 7Gi
 ```
-```
+```yaml
 # mysql-service.yaml
 ---
 apiVersion: v1
@@ -289,7 +289,7 @@ spec:
 * Se debe correr el siguiente comando en el master para tener los manifiestos organizados ```mkdir wordpress-manifests```
 * Luego,  ```cd wordpress-manifests```
 * Se deben crear los siguiente manifiestos
-```
+```yaml
 # wp-deployment.yaml
 ---
 apiVersion: apps/v1
@@ -337,7 +337,7 @@ spec:
         persistentVolumeClaim:
           claimName: wordpress-pvc
 ```
-```
+```yaml
 # wp-pv.yaml
 ---
 apiVersion: v1
@@ -356,7 +356,7 @@ spec:
     server: 10.0.0.6
     path: /srv/nfs
 ```
-```
+```yaml
 # wp-pvc.yaml
 ---
 apiVersion: v1
@@ -373,7 +373,7 @@ spec:
     requests:
       storage: 7Gi
 ```
-```
+```yaml
 # wp-service.yaml
 ---
 
@@ -400,7 +400,7 @@ spec:
 * Se debe correr el siguiente comando en el master para tener los manifiestos organizados ```mkdir ingress```
 * Luego,  ```cd ingress```
 * Se deben crear los siguiente manifiestos
-```
+```yaml
 # ingress.yaml
 ---
 apiVersion: networking.k8s.io/v1
@@ -448,7 +448,7 @@ Con todo lo anterior podemos acceder a la IP Publica de nuestro master y ya debe
     - `microk8s kubectl create secret generic letsencrypt-private-key --from-file=letsencrypt-private-key.pem`
 
 * Ahora debemos crear los manifiestos para el certificado SSL
-```
+```yaml
 # cluster-issuer.yaml
 ---
 apiVersion: cert-manager.io/v1
@@ -470,7 +470,7 @@ spec:
           ingress:
             class: public
 ```
-```
+```yaml
 # cluster-issuer-staging.yaml
 ---
 apiVersion: cert-manager.io/v1
@@ -493,7 +493,7 @@ spec:
   * ``microk8s kubectl apply -f cluster-issuer.yaml``
   * Validamos el estado con `microk8s kubectl get clusterissuer`
 * Ahora creamos el siguiente manifiesto:
-```
+```yaml
 # ingress-routes.yaml
 ---
 apiVersion: networking.k8s.io/v1
